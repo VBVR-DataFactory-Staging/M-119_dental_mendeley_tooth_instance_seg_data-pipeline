@@ -38,19 +38,17 @@ def process_case(img_p, mask_p, idx):
 
 def main():
     root = DATA_ROOT / "_extracted" / "M-119_Dental"
-    pairs = []
-    # collect all image+mask pairs from every split
-    for split in ["train", "test", "valid", "Update_Test"]:
-        for img_dir_name in [f"{split}_images", "test_images"]:
-            for img in root.rglob(f"{img_dir_name}/*.jpg"):
-                # Find matching mask: replace "images" with "mask" or "masks"
-                for mask_dir in ["train_mask", "test_mask", "valid_mask", "test_masks", "train_masks", "valid_masks"]:
-                    mask = img.parent.parent / mask_dir / img.name
-                    if mask.exists():
-                        pairs.append((img, mask))
-                        break
-    # dedupe
-    pairs = list({(str(a), str(b)): (a, b) for a, b in pairs}.values())
+    # walk everything, split by "images" vs "mask" in path
+    all_jpgs = list(root.rglob("*.jpg"))
+    imgs, masks = [], []
+    for p in all_jpgs:
+        pstr = str(p).lower()
+        if "/test_images/" in pstr or "/train_images/" in pstr or "/valid_images/" in pstr:
+            imgs.append(p)
+        elif "_mask" in pstr or "/masks/" in pstr:
+            masks.append(p)
+    mask_by_name = {p.name: p for p in masks}
+    pairs = [(img, mask_by_name[img.name]) for img in imgs if img.name in mask_by_name]
     print(f"  {len(pairs)} Dental image+mask pairs")
     for i, (img, mask) in enumerate(pairs):
         d = process_case(img, mask, i)
