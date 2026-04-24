@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Dataset generation entry point for M-038 (skin_lesion_segmentation).
+"""Dataset generation entry point for M-119 (dental_mendeley_tooth_instance_seg).
 
 Usage:
     python examples/generate.py
@@ -16,12 +16,12 @@ from src.pipeline import TaskPipeline, TaskConfig
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate M-038 dataset")
+    parser = argparse.ArgumentParser(description="Generate M-119 dataset")
     parser.add_argument("--num-samples", type=int, default=None)
     parser.add_argument("--output", type=str, default="data/questions")
     args = parser.parse_args()
 
-    print("Generating M-038 (skin_lesion_segmentation) dataset...")
+    print("Generating M-119 (dental_mendeley_tooth_instance_seg) dataset...")
     config = TaskConfig(
         num_samples=args.num_samples,
         output_dir=Path(args.output),
